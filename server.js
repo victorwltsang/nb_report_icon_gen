@@ -64,7 +64,7 @@ var downloadImage = ((name, url) => {
   let image_name = name.concat(ext);
 
   if (process.env.NODE_ENV === 'production') {
-    request(url).pipe(fs.createWriteStream(path.resolve('client/build/public/assets/icons', image_name)));
+    request(url).pipe(fs.createWriteStream(path.resolve('client/build/assets/icons', image_name)));
   } else {
     request(url).pipe(fs.createWriteStream(path.resolve('client/public/assets/icons', image_name)));
 
