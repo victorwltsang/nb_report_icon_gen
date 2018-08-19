@@ -10,7 +10,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-console.log('hi');
+
     this.initialIcons().then(res => {
 
       this.setState({icons: res.icons});
