@@ -10,8 +10,9 @@ class App extends Component {
   };
 
   componentDidMount() {
-
+console.log('hi');
     this.initialIcons().then(res => {
+
       this.setState({icons: res.icons});
 
     }).catch(err => console.log(err));
@@ -26,7 +27,7 @@ class App extends Component {
 
 
   duplicateIconValidation =  () => {
-    
+
     let {userInput} = {
       ...this.state
     };
