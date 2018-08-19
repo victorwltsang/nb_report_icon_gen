@@ -41,7 +41,7 @@ app.get('/api/all-icons', (req, res) => {
 app.get('/api/icon-db', (req, res) => {
   console.log(req.query.name);
   const iconName = req.query.name;
-  const iconUrl = req.query.url;
+  const iconUrl = `./assets/icons/${iconName}.png`;
   let iconObj = {
     name:iconName,
     url:iconUrl
@@ -67,7 +67,7 @@ var saveToIconList = ((icon) => {
         }
 
         console.log("The file was saved!");
-        return (obj);
+        return (json);
       }); // write it back
     }
   });

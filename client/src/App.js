@@ -26,7 +26,7 @@ class App extends Component {
 
 
   duplicateIconValidation =  () => {
-
+    console.log("duplicate");
     let {userInput} = {
       ...this.state
     };
@@ -34,7 +34,7 @@ class App extends Component {
     if (!userInput) {
       return false;
     }
-
+    console.log(this.state.icons);
     let result = this.state.icons.find(icon =>{
       return icon.name === userInput ? icon.url : null;
     });
@@ -44,7 +44,9 @@ class App extends Component {
       this.setState({userInput: ""});
       let newIcons = [...this.state.icons];
       newIcons.push(result);
-      const response =  fetch(`/api/icon-db?name=${result.name}&url=${result.url}`);
+      const response =   fetch(`/api/icon-db?name=${result.name}`);
+      console.log(response);
+
       this.setState({
         icons:newIcons
       });
