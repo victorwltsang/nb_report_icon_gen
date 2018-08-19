@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-
+import IconSearch from './components/Icons/IconSearch/IconSearch.js';
+import IconsList from './components/Icons/IconsList/IconsList.js';
 import './App.css';
 
 class App extends Component {
@@ -9,24 +10,60 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.initialIcons().then(res => this.setState({icons: res.icons})).catch(err => console.log(err));
+
+    this.initialIcons().then(res => {
+      this.setState({icons: res.icons});
+
+    }).catch(err => console.log(err));
+
   }
 
-  initialIcons = async () =>{
+  initialIcons = async () => {
     const response = await fetch('/api/all-icons');
     const body = await response.json();
     return body;
   }
 
-  callApi = async () => {
 
-    let {userInput} = {...this.state};
+  duplicateIconValidation =  () => {
 
-    this.setState({
-      userInput: ""
+    let {userInput} = {
+      ...this.state
+    };
+
+    if (!userInput) {
+      return false;
+    }
+
+    let result = this.state.icons.find(icon =>{
+
+      return icon.name === userInput ? icon.url : null;
+
+
     });
 
-    console.log(userInput);
+    if (result) {
+
+      this.setState({userInput: ""});
+      let newIcons = [...this.state.icons];
+      newIcons.push(result);
+      const response =  fetch(`/api/icon-db?name=${result.name}&url=${result.url}`);
+      this.setState({
+        icons:newIcons
+      });
+
+    } else {
+      this.callApi();
+    }
+
+  }
+
+  callApi = async () => {
+    console.log(this.state.userInput);
+    let {userInput} = {
+      ...this.state
+    };
+    this.setState({userInput: ""});
     const response = await fetch(`/api/icon?name=${userInput}`);
     const body = await response.json();
 
@@ -34,39 +71,28 @@ class App extends Component {
       throw Error(body.message);
 
     let newIcons = [...this.state.icons];
-    newIcons.push(body)
+    newIcons.push(body);
     this.setState({icons: newIcons});
   };
 
   inputHandler = (event) => {
-    this.setState({userInput: event.target.value})
+    this.setState({userInput: event.target.value});
   }
   keyPress = (event) => {
+
     if (event.keyCode === 13) {
-      this.setState({userInput: event.target.value})
-      this.callApi(this.state.userInput);
+      this.setState({userInput: event.target.value});
+      this.duplicateIconValidation();
     }
   }
 
   render() {
 
-    let calledLogos = this.state.icons.map((icon, i) => {
-      return (<div key={icon.name + i}>
-        <img src={icon.url} alt={icon.name}/>
-        <p>{icon.name}</p>
-      </div>)
-    });
-
     return (<div className="App">
       <h1>NetBase Live Report Icon Generator Prototype</h1>
-      <div className="IconSearch">
-        <input type="text" onChange={this.inputHandler} value={this.state.userInput} onKeyDown={this.keyPress}/>
-         <button onClick={this.callApi}>Submit</button>
-      </div>
+      <IconSearch inputHandler={this.inputHandler} inputKeyPress={this.keyPress} userInput={this.state.userInput} submit={this.duplicateIconValidation}/>
 
-      <div className="IconsGrid">
-        {calledLogos}
-      </div>
+      <IconsList icons={this.state.icons}/>
     </div>);
   }
 }

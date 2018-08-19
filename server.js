@@ -18,7 +18,7 @@ app.get('/api/icon', (req, res) => {
   }, function(err, data) {
     if (!err) {
       console.log(data.icons[0].preview_url_42);
-      saveToIconList(iconName, downloadImage(iconName, data.icons[0].preview_url_42));
+      saveToIconList(downloadImage(iconName, data.icons[0].preview_url_42));
       res.send({name: iconName, url: data.icons[0].preview_url_42});
     }
   });
@@ -29,20 +29,35 @@ app.get('/api/all-icons', (req, res) => {
   fs.readFile('icons-db.json', 'utf8', function readFileCallback(err, data) {
     if (err) {
       console.log(err);
+
     } else {
-      obj = JSON.parse(data); //now it an object
+      const obj = JSON.parse(data); //now it an object
       res.send(obj);
     }
   });
 
 });
 
-var saveToIconList = ((name, icon) => {
+app.get('/api/icon-db', (req, res) => {
+  console.log(req.query.name);
+  const iconName = req.query.name;
+  const iconUrl = req.query.url;
+  let iconObj = {
+    name:iconName,
+    url:iconUrl
+  }
+
+  saveToIconList(iconObj);
+
+
+});
+
+var saveToIconList = ((icon) => {
   fs.readFile('icons-db.json', 'utf8', function readFileCallback(err, data) {
     if (err) {
       console.log(err);
     } else {
-      obj = JSON.parse(data); //now it an object
+      const obj = JSON.parse(data); //now it an object
 
       obj.icons.push(icon); //add some data
       json = JSON.stringify(obj); //convert it back to json
@@ -61,18 +76,18 @@ var saveToIconList = ((name, icon) => {
 var downloadImage = ((name, url) => {
 
   let ext = path.extname(url);
-  let image_name = name.concat(ext);
+  let imageName = name.concat(ext);
 
   if (process.env.NODE_ENV === 'production') {
-    request(url).pipe(fs.createWriteStream(path.resolve('client/build/assets/icons', image_name)));
+    request(url).pipe(fs.createWriteStream(path.resolve('client/build/assets/icons', imageName)));
   } else {
-    request(url).pipe(fs.createWriteStream(path.resolve('client/public/assets/icons', image_name)));
+    request(url).pipe(fs.createWriteStream(path.resolve('client/public/assets/icons', imageName)));
 
   }
 
   let newIcon = {
     name: name,
-    url: `./assets/icons/${image_name}`
+    url: `./assets/icons/${imageName}`
   }
   return (newIcon);
 });
