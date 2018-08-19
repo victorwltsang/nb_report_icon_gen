@@ -62,8 +62,13 @@ var downloadImage = ((name, url) => {
 
   let ext = path.extname(url);
   let image_name = name.concat(ext);
-  // console.log(fs.createWriteStream(path.resolve('client/src/','assets/icons',image_name)).path);
-  request(url).pipe(fs.createWriteStream(path.resolve('client/public/', 'assets/icons', image_name)));
+
+  if (process.env.NODE_ENV === 'production') {
+    request(url).pipe(fs.createWriteStream(path.resolve('client/build/public/assets/icons', image_name)));
+  } else {
+    request(url).pipe(fs.createWriteStream(path.resolve('client/public/assets/icons', image_name)));
+
+  }
 
   let newIcon = {
     name: name,
