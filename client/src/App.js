@@ -36,10 +36,7 @@ class App extends Component {
     }
 
     let result = this.state.icons.find(icon =>{
-
       return icon.name === userInput ? icon.url : null;
-
-
     });
 
     if (result) {

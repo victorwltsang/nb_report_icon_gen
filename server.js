@@ -47,8 +47,8 @@ app.get('/api/icon-db', (req, res) => {
     url:iconUrl
   }
 
-  saveToIconList(iconObj);
-
+   let result = saveToIconList(iconObj);
+   res.send(result);
 
 });
 
@@ -67,6 +67,7 @@ var saveToIconList = ((icon) => {
         }
 
         console.log("The file was saved!");
+        return (obj);
       }); // write it back
     }
   });
